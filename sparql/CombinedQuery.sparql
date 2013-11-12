@@ -1,0 +1,40 @@
+PREFIX conversion: <http://logd.tw.rpi.edu/source/data-gov/dataset/5413/vocab/enhancement/1/>
+SELECT fn:concat("(",?dt,")") as ?YEAR, ?rt as ?RATE, ?total/100 as ?OPEC, ?nonopec/100 as ?NONOPEC
+WHERE {
+graph <http://logd.tw.rpi.edu/source/data-gov/dataset/861/version/2011-Dec-16>
+{
+SELECT substr(?date,1,4) as ?dt, avg(xsd:decimal(?rate))*100 as ?rt
+FROM <http://logd.tw.rpi.edu/source/data-gov/dataset/861/version/2011-Dec-16>
+WHERE
+{ 
+  ?s <http://logd.tw.rpi.edu/source/data-gov/dataset/861/vocab/raw/date> ?date;
+     <http://logd.tw.rpi.edu/source/data-gov/dataset/861/vocab/raw/dollars_per_barrel> ?rate.
+}
+GROUP BY substr(?date,1,4)
+}
+
+graph <http://logd.tw.rpi.edu/source/data-gov/dataset/5413/version/2011-Dec-16>
+{
+ SELECT substr(?date,5) as ?dt, (sum(xsd:decimal(?algeria)) + sum(xsd:decimal(?angola)) + sum(xsd:decimal(?ecuador)) + sum(xsd:decimal(?iraq)) + sum(xsd:decimal(?kuwait)) + sum(xsd:decimal(?libya)) + sum(xsd:decimal(?nigeria)) + sum(xsd:decimal(?qatar)) + sum(xsd:decimal(?saudi)) + sum(xsd:decimal(?uae)) + sum(xsd:decimal(?venezuala)))*30 as ?total, sum(xsd:decimal(?nonopec))*30 as ?nonopec
+FROM <http://logd.tw.rpi.edu/source/data-gov/dataset/5413/version/2011-Dec-16>
+WHERE 
+ {
+ ?s conversion:date ?date;
+     conversion:u_s_imports_from_algeria_of_crude_oil_and_petroleum_products_thousand_barrels_per_day ?algeria;
+     conversion:u_s_imports_from_angola_of_crude_oil_and_petroleum_products_thousand_barrels_per_day ?angola;
+     conversion:u_s_imports_from_ecuador_of_crude_oil_and_petroleum_products_thousand_barrels_per_day ?ecuador;
+     conversion:u_s_imports_from_iraq_of_crude_oil_and_petroleum_products_thousand_barrels_per_day ?iraq;
+     conversion:u_s_imports_from_kuwait_of_crude_oil_and_petroleum_products_thousand_barrels_per_day ?kuwait;
+     conversion:u_s_imports_from_libya_of_crude_oil_and_petroleum_products_thousand_barrels_per_day ?libya;
+     conversion:u_s_imports_from_nigeria_of_crude_oil_and_petroleum_products_thousand_barrels_per_day ?nigeria;
+     conversion:u_s_imports_from_qatar_of_crude_oil_and_petroleum_products_thousand_barrels_per_day ?qatar;
+     conversion:u_s_imports_from_saudi_arabia_of_crude_oil_and_petroleum_products_thousand_barrels_per_day ?saudi;
+     conversion:u_s_imports_from_united_arab_emirates_of_crude_oil_and_petroleum_products_thousand_barrels_per_day ?uae;
+     conversion:u_s_imports_from_venezuela_of_crude_oil_and_petroleum_products_thousand_barrels_per_day ?venezuala;
+     conversion:u_s_imports_from_non_opec_countries_of_crude_oil_and_petroleum_products_thousand_barrels_per_day ?nonopec.
+FILTER (?date != "")
+}
+GROUP BY substr(?date,5)
+}
+}
+order by 1
