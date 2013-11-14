@@ -1,21 +1,37 @@
+<!--
+  Authors: Yogeshwara Krishnan,
+           Sudharshan Narasimham Vasudevan.
+  Index.html:
+  Date modified: 11/13/2013 
+-->
 <html>
   <head>
     <h1>Trends in petroleum imports and realtime petroleum prices</h1>
   	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
     <script type='text/javascript'>
+      /*Load the required Google Visualization APIs. In this case, Corechart and GeoMap.*/
       google.load('visualization', '1', {packages:['corechart']});
       google.load('visualization', '1', {'packages': ['geomap']});
+      google.load('visualization', '1', {packages:['table']});
+      /*We call these two functions on load to load the chart with default data.*/
       google.setOnLoadCallback(drawLineChart);
       google.setOnLoadCallback(getUserInput);
 
+      /*
+        This method will render the cumulative imports and rate data from
+        the js file which holds the results of the query. Note that this is a static content.
+      */
       function drawLineChart() {
-
+        //Construct a URL for the query.
       	var queryURL = "http://localhost:8080/semanticweb/js/CombinedQueryResult.js";
 
       	var query = new google.visualization.Query(queryURL); // Send the query.
-        query.send(handleQueryResponse);
+        query.send(handleQueryResponse); // Handle the response.
     }
 
+    /*
+      Handles the JSON response for the cumulative report.
+    */
     function handleQueryResponse(response) {
     	if (response.isError()) {
            alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
@@ -25,7 +41,6 @@
         var jsonData = response.getDataTable();
         var jsonObj = [];
         var rows = jsonData.getNumberOfRows();
-        //alert('No. of rows' + rows);
 
         var newdata = new google.visualization.DataTable();
         newdata.addColumn('string', 'Year');
@@ -36,10 +51,9 @@
         {
           var year = jsonData.getValue(i, 0);
           var rate = jsonData.getValue(i, 1);
-          var tbd =  jsonData.getValue(i, 2); // AGI figure uses thousand-dollar unit
+          var tbd =  jsonData.getValue(i, 2);
           newdata.addRow([year,rate, tbd]);
         }
-        //alert(year1);
 
         var lineGraphData = new google.visualization.DataTable(jsonData);
 
@@ -55,8 +69,8 @@
       function getUserInput() {
       var e = document.getElementById("yearSelect");
       var strUser = e.options[e.selectedIndex].value;
-      var lineChartQueryURL = "http://logd.tw.rpi.edu/sparql.php?query-option=text&query=PREFIX+conversion%3A+%3Chttp%3A%2F%2Fpurl.org%2Ftwc%2Fvocab%2Fconversion%2F%3E%0D%0ASELECT+fn%3Aconcat%28%22%28%22%2Csubstr%28%3Fdate%2C5%2C2%29%2C%22%29%22%29+as+%3Fyear%2C+%28xsd%3Adecimal%28%3Frate%29%29+as+%3Frate%0D%0AFROM+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F861%2Fversion%2F2011-Dec-16%3E%0D%0AWHERE+{%0D%0A++%3Fs+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F861%2Fvocab%2Fraw%2Fdate%3E+%3Fdate%3B%0D%0A+++++%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F861%2Fvocab%2Fraw%2Fdollars_per_barrel%3E+%3Frate.%0D%0AFILTER%28substr%28%3Fdate%2C1%2C4%29%3D%22"+strUser+"%22%29%0D%0A}%0D%0AORDER+BY+1&service-uri=&output=gvds&callback=&tqx=&tp=";
-      //alert(queryURL);
+      var lineChartQueryURL = "http://logd.tw.rpi.edu/sparql.php?query-option=text&query=PREFIX+conversion%3A+%3Chttp%3A%2F%2Fpurl.org%2Ftwc%2Fvocab%2Fconversion%2F%3E%0D%0ASELECT+fn%3Aconcat%28%22%28%22%2Csubstr%28%3Fdate%2C5%2C2%29%2C%22%29%22%29+as+%3Fyear%2C+%28xsd%3Adecimal%28%3Frate%29%29+as+%3FRATE%0D%0AFROM+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F861%2Fversion%2F2011-Dec-16%3E%0D%0AWHERE+{%0D%0A++%3Fs+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F861%2Fvocab%2Fraw%2Fdate%3E+%3Fdate%3B%0D%0A+++++%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F861%2Fvocab%2Fraw%2Fdollars_per_barrel%3E+%3Frate.%0D%0AFILTER%28substr%28%3Fdate%2C1%2C4%29%3D%22"+strUser+"%22%29%0D%0A}%0D%0AORDER+BY+1&service-uri=&output=gvds&callback=&tqx=&tp=";
+      
       var lineChartQuery = new google.visualization.Query(lineChartQueryURL); // Send the query.
         lineChartQuery.send(handleLineChartQueryResponse);
 
@@ -87,8 +101,13 @@
 
         var lineGraphData = new google.visualization.DataTable(jsonData);
 
+        var options = {
+          title: 'Monthly petroleum prices',
+          legend: { position: 'bottom' }
+        };
+
         var chart = new google.visualization.LineChart(document.getElementById('yearly_rate_chart_div'));
-        chart.draw(jsonData);
+        chart.draw(jsonData, options);
     }
 
     function handlePieChartQueryResponse(response) {
@@ -103,6 +122,10 @@
         var options = {
           title: 'Monthly imports from OPEC Countries',
           is3D: true,
+          width: '312',
+          height: '312',
+          legend: 'none',
+          pieSliceText: 'label'
         };
 
 
@@ -124,6 +147,10 @@
         var options = {
           title: 'Monthly imports from NON OPEC Countries',
           is3D: true,
+          width: '312',
+          height: '312',
+          legend: 'none',
+          pieSliceText: 'label'
         };
 
 
@@ -140,7 +167,7 @@
         }
         var jsonData = response.getDataTable();
         var jsonObj = [];
-        var countryList = ['Algeria', 'Angola', 'Equador', 'Iraq', 'Iran', 'Kuwait', 'Libya', 'Nigeria', 'Qatar', 'Saudi Arabia', 'United Arab Emirates', 'Venezuela'];
+        var countryList = ['Algeria', 'Angola', 'Ecuador', 'Iraq', 'Iran', 'Kuwait', 'Libya', 'Nigeria', 'Qatar', 'Saudi Arabia', 'United Arab Emirates', 'Venezuela'];
         var columns = jsonData.getNumberOfColumns();
         //alert(columns);
         var newdata = new google.visualization.DataTable();
@@ -163,6 +190,57 @@
         var geomap = new google.visualization.GeoMap(
             document.getElementById('geo_map_div'));
         geomap.draw(newdata, options);
+        google.visualization.events.addListener( geomap, 'regionClick',
+        function(e) {
+            //alert(e['region']);
+            drawTableForCountry(e['region']);
+        });
+    }
+
+    function drawTableForCountry(countryCode) {
+
+      var countryCodeList = [['algeria', 'DZ'], 
+      ['angola', 'AO'], 
+      ['ecuador','EC'], 
+      ['iraq', 'IQ'], 
+      ['iran', 'IR'], 
+      ['kuwait', 'KW'], 
+      ['libya', 'LY'], 
+      ['nigeria', 'NG'], 
+      ['qatar', 'QA'], 
+      ['saudi_arabia', 'SA'], 
+      ['united_arab_emirates', 'AE'], 
+      ['venezuela', 'VE']];
+
+      var predicateCountry = "";
+      var e = document.getElementById("yearSelect");
+      var yearSelected = e.options[e.selectedIndex].value;
+
+      for (var i=0; i < countryCodeList.length; i++) {
+        if (countryCode == countryCodeList[i][1]) {
+          predicateCountry = countryCodeList[i][0];
+        }
+      }
+
+      var countryQueryURL = "http://logd.tw.rpi.edu/sparql.php?query-option=text&query=PREFIX+conversion%3A+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fvocab%2Fenhancement%2F1%2F%3E%0D%0ASELECT+substr%28%3Fdate%2C1%2C3%29+as+%3FMONTH%2C%3FIMPORT%0D%0AFROM+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fversion%2F2011-Dec-16%3E%0D%0AWHERE+%0D%0A+{%0D%0A+%3Fs+conversion%3Adate+%3Fdate%3B%0D%0A+++++conversion%3Au_s_imports_from_"+predicateCountry+"_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3FIMPORT.%0D%0A++++%0D%0AFILTER+%28%3Fdate+!%3D+%22%22+%26%26+substr%28%3Fdate%2C5%29%3D%22"+yearSelected+"%22%29%0D%0A}%0D%0A&service-uri=&output=gvds&callback=&tqx=&tp=";
+
+      var countryQuery = new google.visualization.Query(countryQueryURL); // Send the query.
+      countryQuery.send(handleCountryQueryResponse);
+    }
+
+    function handleCountryQueryResponse(response) {
+      if (response.isError()) {
+           alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+           return;
+      }
+
+      var jsonData = response.getDataTable();
+      var jsonObj = [];
+
+      var countryTableData = new google.visualization.DataTable(jsonData);
+
+      var chart = new google.visualization.Table(document.getElementById('table_div'));
+      chart.draw(jsonData, {showRowNumber: false, height: '27', title: 'Monthly imports'});
     }
     </script>
   </head>
@@ -170,7 +248,7 @@
     <table>
       <tr>
         <td><div id='static_chart_div' style="width:600px; height:350px">
-        </div> RATE = dollars per thousand barrels <br>
+        </div> RATE = average rate per thousand barrels ($)<br>
                OPEC/NONOPEC = 100,000 barrels imported </td>
     <td>
       <select id="yearSelect" onChange="getUserInput()">
@@ -194,7 +272,6 @@
       <option value="2009">2009</option>
       <option value="2010">2010</option>
       <option value="2011">2011</option>
-      <option value="2012">2012</option>
     </select>
       <div id='yearly_rate_chart_div' style="width:625px; height:250px"></div></td>
     </tr>
@@ -216,6 +293,17 @@
     <tr>
       <td>
         <div id='geo_map_div' style="width:625px; height:500px"></div>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td></td>
+            <td>
+              <div id='table_div' style="width:156px; height:500px"></div>
+            </td>
+            <td>   Click on the highlighted country for monthly import data.</td>
+          </tr>
+        </table>
       </td>
     </tr>
     </table>
