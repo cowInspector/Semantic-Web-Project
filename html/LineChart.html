@@ -6,7 +6,7 @@
 -->
 <html>
   <head>
-    <h1>Trends in petroleum imports and realtime petroleum prices</h1>
+    <h1>Trends in petroleum imports and realtime petroleum prices (1992-2011)</h1>
     <hr>
   	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
     <script type='text/javascript'>
@@ -60,7 +60,8 @@
 
         var options = {
           title: 'Trends in imports and rate',
-          legend: { position: 'bottom' }
+          legend: { position: 'bottom' },
+          backgroundColor: {fill : "#FFFFCC"}
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('static_chart_div'));
@@ -105,7 +106,8 @@
 
         var options = {
           title: 'Monthly petroleum prices',
-          legend: { position: 'bottom' }
+          legend: { position: 'bottom' },
+          backgroundColor: {fill : "#FFFFCC"}
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('yearly_rate_chart_div'));
@@ -127,7 +129,8 @@
           width: '312',
           height: '312',
           legend: 'none',
-          pieSliceText: 'label'
+          pieSliceText: 'label',
+          backgroundColor: {fill : "#FFFFCC"}
         };
 
 
@@ -152,7 +155,8 @@
           width: '312',
           height: '312',
           legend: 'none',
-          pieSliceText: 'label'
+          pieSliceText: 'label',
+          backgroundColor: {fill : "#FFFFCC"}
         };
 
 
@@ -184,9 +188,10 @@
         }
         var options = {
           dataMode: 'regions',
-          width: '800',
+          width: '1260',
           height: '500',
-          colors: [0xFF8747, 0xFFB581, 0xc06000]
+          colors: [0xFF8747, 0xFFB581, 0xc06000],
+          backgroundColor: {fill : "#FFFFCC"}
         };
       
         var geomap = new google.visualization.GeoMap(
@@ -194,7 +199,6 @@
         geomap.draw(newdata, options);
         google.visualization.events.addListener( geomap, 'regionClick',
         function(e) {
-            //alert(e['region']);
             drawTableForCountry(e['region']);
         });
     }
@@ -246,12 +250,24 @@
     }
     </script>
   </head>
-  <body>
+  <body bgcolor="#FFFFCC">
+        <b>Description:</b>
+    A demo that illustrates the trend in petroleum imports by US from OPEC and Non-OPEC countries and the petroleum prices. <br><br>
+    <b>Contributors: </b>
+    Sudharshan Narasimhan Vasudevan. <br>
+    <nbsp> Yogeshwara Krishnan <br>
+      <br>
+      <b></b>
+      <b>Browser consideration:</b> Works with browsers which have compatible Flash plugin. <br> <br>
+      <b>Using the demo:</b> <br>
+      1. The static graph illustrates the cumulative import data of OPEC countries in comparison with Non-OPEC countries and the average rate of petroleum in US during the years 1992-2011. <br>
+      2. Select a year. The graph shows the monthly petroleum rates per barrel during that year. The Pie charts are illustrations of monthly (cumulative) petroleum imports from OPEC and Non-OPEC countries. <br>
     <table>
       <tr>
-        <td><div id='static_chart_div' style="width:600px; height:350px">
-        </div> RATE = average rate per thousand barrels ($)<br>
-               OPEC/NONOPEC = 100,000 barrels imported </td>
+        <td><div id='static_chart_div' style="width:600px; height:350px;">
+        </div> RATE = average rate per thousand barrels in USD<br>
+               OPEC/NONOPEC = y*100,000 barrels imported where <br>y is the corresponding value from the graph. <br> <br>
+             </td>
     <td> Year:
       <select id="yearSelect" onChange="getUserInput()">
       <option value="1992">1992</option>
@@ -275,10 +291,12 @@
       <option value="2010">2010</option>
       <option value="2011">2011</option>
     </select>
-      <div id='yearly_rate_chart_div' style="width:625px; height:250px"></div></td>
+      <div id='yearly_rate_chart_div' style="width:625px; height:250px"></div> <br>
+      RATE = Rate per barrel in USD.
+    </td>
     </tr>
     <tr>
-      <td></td>
+      <td>The highlighted countries in the map are the OPEC affiliated countries. The map shows petroleum import data for the year chosen. Click on the highlighted regions for month wise import data (Shown as a table). Please note that Non-OPEC countries are not highlighted.</td>
       <td>
         <table>
           <tr>
@@ -294,21 +312,33 @@
     </tr>
     <tr>
       <td>
+        <b>Individual petroleum imports of OPEC Countries (Yearly)</b> <br>
         <div id='geo_map_div' style="width:625px; height:500px"></div>
       </td>
       <td>
         <table>
           <tr>
-            <td></td>
+            <td><div id='dummy_div1' style="width:140px; height:500px"></td>
+            <td><div id='dummy_div2' style="width:140px; height:500px"></td>
             <td>
-              <div id='table_div' style="width:156px; height:500px"></div>
+              <br>
+              <div id='table_div' style="width:140px; height:500px"></div>
             </td>
-            <td>Click on the highlighted country for monthly import data.</td>
           </tr>
         </table>
       </td>
     </tr>
     </table>
+    <hr>
+    <b>Uses Datasets:</b> Dataset-861 <br>
+    Dataset-5413<br> <br>
+    <b>Uses Technology: </b> RDF <br>
+    SPARQL <br>
+    Javascript <br>
+    Google Visualization API <br>
+    SparqlProxy<br> <br>
+    <b>Uses SPARQL Endpoint: </b> <br> <br>
+    <b>Note:</b> *Countries listed under OPEC and non-OPEC are based on current affiliations. OPEC and non-OPEC totals are based on affiliations for the stated period of time which may differ from current affiliations. Indonesia withdrew from OPEC in January 2009, Angola joined OPEC in January 2007, Ecuador withdrew from OPEC in January 1993 and rejoined in November 2007, and Gabon withdrew from OPEC in July 1996. Crude oil and petroleum products are reported by the PAD District of entry. Crude oil includes imports for storage in the Stategic Petroleum Reserve. The Persian Gulf includes Bahrain, Iran, Iraq, Kuwait, Qatar, Saudi Arabia, and United Arab Emirates. Totals may not equal sum of components due to independent rounding.
     <hr>
   </body>
 </html>
