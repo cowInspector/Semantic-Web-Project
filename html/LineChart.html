@@ -87,7 +87,7 @@
         var nonOpecPieChartQuery = new google.visualization.Query(nonOpecPieChartQueryURL); // Send the query.
         nonOpecPieChartQuery.send(handleNonOpecPieChartQueryResponse);
 
-        var geoMapQueryURL = "http://logd.tw.rpi.edu/sparql.php?query-option=text&query=PREFIX+conversion%3A+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fvocab%2Fenhancement%2F1%2F%3E%0D%0ASELECT+substr%28%3Fdate%2C5%29+as+%3Fyear+%2Csum%28xsd%3Adecimal%28%3Falgeria%29%29+as+%3Falgeria+%2C+sum%28xsd%3Adecimal%28%3Fangola%29%29+as+%3Fangola+%2C+sum%28xsd%3Adecimal%28%3Fecuador%29%29+as+%3Fecuador+%2C+sum%28xsd%3Adecimal%28%3Firaq%29%29+as+%3Firaq+%2Csum%28xsd%3Adecimal%28%3Firan%29%29+as+%3Firan+%2C+sum%28xsd%3Adecimal%28%3Fkuwait%29%29+as+%3Fkuwait%2C+sum%28xsd%3Adecimal%28%3Flibya%29%29+as+%3Flibya%2C+sum%28xsd%3Adecimal%28%3Fnigeria%29%29+as+%3Fnigeria%2C+sum%28xsd%3Adecimal%28%3Fqatar%29%29+as+%3Fqatar+%2C+sum%28xsd%3Adecimal%28%3Fsaudi%29%29+as+%3Fsaudi%2C+sum%28xsd%3Adecimal%28%3Fuae%29%29+as+%3Fuae+%2C+sum%28xsd%3Adecimal%28%3Fvenezuala%29%29+as+%3Fvenezuala%0D%0AFrom+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fversion%2F2011-Dec-16%3E%0D%0AWHERE+%7B%0D%0A+%3Fs+conversion%3Adate+%3Fdate%3B%0D%0A+++++conversion%3Au_s_imports_from_algeria_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Falgeria%3B%0D%0A+++++conversion%3Au_s_imports_from_angola_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fangola%3B%0D%0A+++++conversion%3Au_s_imports_from_ecuador_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fecuador%3B%0D%0A+++++conversion%3Au_s_imports_from_iraq_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Firaq%3B%0D%0A+++++conversion%3Au_s_imports_from_iran_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Firan%3B%0D%0A+++++conversion%3Au_s_imports_from_kuwait_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fkuwait%3B%0D%0A+++++conversion%3Au_s_imports_from_libya_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Flibya%3B%0D%0A+++++conversion%3Au_s_imports_from_nigeria_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fnigeria%3B%0D%0A+++++conversion%3Au_s_imports_from_qatar_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fqatar%3B%0D%0A+++++conversion%3Au_s_imports_from_saudi_arabia_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fsaudi%3B%0D%0A+++++conversion%3Au_s_imports_from_united_arab_emirates_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fuae%3B%0D%0A+++++conversion%3Au_s_imports_from_venezuela_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fvenezuala.%0D%0AFILTER+%28%3Fdate+%21%3D+%22%22+%26%26+substr%28%3Fdate%2C5%29+%3D+%22"+strUser+"%22%29%0D%0A%7D%0D%0AGroup+by+substr%28%3Fdate%2C5%29%0D%0Aorder+by+1&service-uri=&output=gvds&callback=&tqx=&tp=";
+        var geoMapQueryURL = "http://logd.tw.rpi.edu/sparql.php?query-option=text&query=PREFIX+conversion%3A+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fvocab%2Fenhancement%2F1%2F%3E%0D%0ASELECT+substr%28%3Fdate%2C5%29+as+%3Fyear+%2Csum%28xsd%3Adecimal%28%3Falgeria*30%29%29+as+%3Falgeria+%2C+sum%28xsd%3Adecimal%28%3Fangola*30%29%29+as+%3Fangola+%2C+sum%28xsd%3Adecimal%28%3Fecuador*30%29%29+as+%3Fecuador+%2C+sum%28xsd%3Adecimal%28%3Firaq*30%29%29+as+%3Firaq+%2Csum%28xsd%3Adecimal%28%3Firan*30%29%29+as+%3Firan+%2C+sum%28xsd%3Adecimal%28%3Fkuwait*30%29%29+as+%3Fkuwait%2C+sum%28xsd%3Adecimal%28%3Flibya*30%29%29+as+%3Flibya%2C+sum%28xsd%3Adecimal%28%3Fnigeria*30%29%29+as+%3Fnigeria%2C+sum%28xsd%3Adecimal%28%3Fqatar*30%29%29+as+%3Fqatar+%2C+sum%28xsd%3Adecimal%28%3Fsaudi*30%29%29+as+%3Fsaudi%2C+sum%28xsd%3Adecimal%28%3Fuae*30%29%29+as+%3Fuae+%2C+sum%28xsd%3Adecimal%28%3Fvenezuala*30%29%29+as+%3Fvenezuala%0D%0AFrom+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fversion%2F2011-Dec-16%3E%0D%0AWHERE+%7B%0D%0A+%3Fs+conversion%3Adate+%3Fdate%3B%0D%0A+++++conversion%3Au_s_imports_from_algeria_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Falgeria%3B%0D%0A+++++conversion%3Au_s_imports_from_angola_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fangola%3B%0D%0A+++++conversion%3Au_s_imports_from_ecuador_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fecuador%3B%0D%0A+++++conversion%3Au_s_imports_from_iraq_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Firaq%3B%0D%0A+++++conversion%3Au_s_imports_from_iran_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Firan%3B%0D%0A+++++conversion%3Au_s_imports_from_kuwait_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fkuwait%3B%0D%0A+++++conversion%3Au_s_imports_from_libya_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Flibya%3B%0D%0A+++++conversion%3Au_s_imports_from_nigeria_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fnigeria%3B%0D%0A+++++conversion%3Au_s_imports_from_qatar_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fqatar%3B%0D%0A+++++conversion%3Au_s_imports_from_saudi_arabia_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fsaudi%3B%0D%0A+++++conversion%3Au_s_imports_from_united_arab_emirates_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fuae%3B%0D%0A+++++conversion%3Au_s_imports_from_venezuela_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fvenezuala.%0D%0AFILTER+%28%3Fdate+%21%3D+%22%22+%26%26+substr%28%3Fdate%2C5%29+%3D+%22"+strUser+"%22%29%0D%0A%7D%0D%0AGroup+by+substr%28%3Fdate%2C5%29%0D%0Aorder+by+1&service-uri=&output=gvds&callback=&tqx=&tp=";
 
         var geoMapQuery = new google.visualization.Query(geoMapQueryURL); // Send the query.
         geoMapQuery.send(handleGeoMapQueryResponse);
@@ -254,8 +254,9 @@
         <b>Description:</b>
     A demo that illustrates the trend in petroleum imports by US from OPEC and Non-OPEC countries and the petroleum prices. <br><br>
     <b>Contributors: </b>
-    Sudharshan Narasimhan Vasudevan. <br>
-    <nbsp> Yogeshwara Krishnan <br>
+    Sudharshan Narasimhan Vasudevan<br>
+    &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+    &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;Yogeshwara Krishnan <br>
       <br>
       <b></b>
       <b>Browser consideration:</b> Works with browsers which have compatible Flash plugin. <br> <br>
@@ -296,7 +297,7 @@
     </td>
     </tr>
     <tr>
-      <td>The highlighted countries in the map are the OPEC affiliated countries. The map shows petroleum import data for the year chosen. Click on the highlighted regions for month wise import data (Shown as a table). Please note that Non-OPEC countries are not highlighted.</td>
+      <td>The highlighted countries in the map are the OPEC affiliated countries. The map shows petroleum import data for the year chosen. Click on the highlighted regions for month wise import data (Shown as a table). Please note that Non-OPEC countries are not highlighted. The IMPORT column is the no. of barrels import per day on an average, times 1000.</td>
       <td>
         <table>
           <tr>
@@ -330,15 +331,15 @@
     </tr>
     </table>
     <hr>
-    <b>Uses Datasets:</b> Dataset-861 <br>
-    Dataset-5413<br> <br>
-    <b>Uses Technology: </b> RDF <br>
-    SPARQL <br>
-    Javascript <br>
-    Google Visualization API <br>
-    SparqlProxy<br> <br>
-    <b>Uses SPARQL Endpoint: </b> <br> <br>
-    <b>Note:</b> *Countries listed under OPEC and non-OPEC are based on current affiliations. OPEC and non-OPEC totals are based on affiliations for the stated period of time which may differ from current affiliations. Indonesia withdrew from OPEC in January 2009, Angola joined OPEC in January 2007, Ecuador withdrew from OPEC in January 1993 and rejoined in November 2007, and Gabon withdrew from OPEC in July 1996. Crude oil and petroleum products are reported by the PAD District of entry. Crude oil includes imports for storage in the Stategic Petroleum Reserve. The Persian Gulf includes Bahrain, Iran, Iraq, Kuwait, Qatar, Saudi Arabia, and United Arab Emirates. Totals may not equal sum of components due to independent rounding.
+    <b>Uses Datasets:</b> <a href="http://logd.tw.rpi.edu/source/data-gov/dataset/861.html">Dataset-861</a> <br>
+    &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;<a href="http://logd.tw.rpi.edu/source/data-gov/dataset/5413.html">Dataset-5413</a><br> <br>
+    <b>Uses Technology: </b> <a href="http://logd.tw.rpi.edu/technology/RDF">RDF</a> <br>
+    &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; <a href="http://logd.tw.rpi.edu/technology/SPARQL">SPARQL</a> <br>
+    &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; <a href="http://logd.tw.rpi.edu/technology/javascript">Javascript</a> <br>
+    &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; <a href="http://logd.tw.rpi.edu/technology/Google_Visualization_API">Google Visualization API</a> <br>
+    &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; <a href="http://logd.tw.rpi.edu/technology/SparqlProxy">SparqlProxy</a><br> <br>
+    <b>Uses SPARQL Endpoint: </b> <a href="http://logd.tw.rpi.edu/sparql">http://logd.tw.rpi.edu/sparql</a><br> <br>
+    <b>Note:</b> Countries listed under OPEC and non-OPEC are based on current affiliations. OPEC and non-OPEC totals are based on affiliations for the stated period of time which may differ from current affiliations. Indonesia withdrew from OPEC in January 2009, Angola joined OPEC in January 2007, Ecuador withdrew from OPEC in January 1993 and rejoined in November 2007, and Gabon withdrew from OPEC in July 1996. Crude oil and petroleum products are reported by the PAD District of entry. Crude oil includes imports for storage in the Stategic Petroleum Reserve. The Persian Gulf includes Bahrain, Iran, Iraq, Kuwait, Qatar, Saudi Arabia, and United Arab Emirates. Totals may not equal sum of components due to independent rounding.
     <hr>
   </body>
 </html>
