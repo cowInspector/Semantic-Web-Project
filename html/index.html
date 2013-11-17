@@ -1,0 +1,356 @@
+<!--
+  Authors: Yogeshwara Krishnan,
+           Sudharshan Narasimhan Vasudevan.
+  Index.html:
+  Date modified: 11/13/2013 
+-->
+<html>
+  <head>
+    <title>Trends in petroleum imports and realtime petroleum prices (1992-2011)</title>
+<style>
+body{
+color:black;
+}
+</style>
+    <h1 style="color:#483D8B;">Trends in petroleum imports and realtime petroleum prices (1992-2011)</h1>
+    <hr>
+  	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <script type='text/javascript'>
+      /*Load the required Google Visualization APIs. In this case, Corechart and GeoMap.*/
+      google.load('visualization', '1', {packages:['corechart']});
+      google.load('visualization', '1', {packages: ['geomap']});
+      google.load('visualization', '1', {packages:['table']});
+      /*We call these two functions on load to load the chart with default data.*/
+      google.setOnLoadCallback(drawLineChart);
+      google.setOnLoadCallback(getUserInput);
+
+      /*
+        This method will render the cumulative imports and rate data from
+        the js file which holds the results of the query. Note that this is a static content.
+      */
+      function drawLineChart() {
+        //Construct a URL for the query.
+      	var queryURL = "http://localhost:8080/semanticweb/js/CombinedQueryResult.js";
+
+      	var query = new google.visualization.Query(queryURL); // Send the query.
+        query.send(handleQueryResponse); // Handle the response.
+    }
+
+    /*
+      Handles the JSON response for the cumulative report.
+    */
+    function handleQueryResponse(response) {
+    	if (response.isError()) {
+           alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+           return;
+        }
+
+        var jsonData = response.getDataTable();
+        var jsonObj = [];
+        var rows = jsonData.getNumberOfRows();
+
+        var newdata = new google.visualization.DataTable();
+        newdata.addColumn('string', 'Year');
+        newdata.addColumn('number', 'Rate');
+        newdata.addColumn('number', 'TBD');
+
+        for (var i = 0; i < rows; i++ )
+        {
+          var year = jsonData.getValue(i, 0);
+          var rate = jsonData.getValue(i, 1);
+          var tbd =  jsonData.getValue(i, 2);
+          newdata.addRow([year,rate, tbd]);
+        }
+
+        var lineGraphData = new google.visualization.DataTable(jsonData);
+
+        var options = {
+          title: 'Trends in imports and rate',
+          legend: { position: 'bottom' },
+          backgroundColor: {fill : "#FFFFF0"},
+          hAxis: {title: 'Year -->'}
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('static_chart_div'));
+        chart.draw(jsonData, options);
+      }
+
+      function getUserInput() {
+      document.getElementById('table_div').style.visibility = "hidden";
+      var e = document.getElementById("yearSelect");
+      var strUser = e.options[e.selectedIndex].value;
+      var lineChartQueryURL = "http://logd.tw.rpi.edu/sparql.php?query-option=text&query=PREFIX+conversion%3A+%3Chttp%3A%2F%2Fpurl.org%2Ftwc%2Fvocab%2Fconversion%2F%3E%0D%0ASELECT+fn%3Aconcat%28%22%28%22%2Csubstr%28%3Fdate%2C5%2C2%29%2C%22%29%22%29+as+%3Fyear%2C+%28xsd%3Adecimal%28%3Frate%29%29+as+%3FRATE%0D%0AFROM+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F861%2Fversion%2F2011-Dec-16%3E%0D%0AWHERE+{%0D%0A++%3Fs+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F861%2Fvocab%2Fraw%2Fdate%3E+%3Fdate%3B%0D%0A+++++%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F861%2Fvocab%2Fraw%2Fdollars_per_barrel%3E+%3Frate.%0D%0AFILTER%28substr%28%3Fdate%2C1%2C4%29%3D%22"+strUser+"%22%29%0D%0A}%0D%0AORDER+BY+1&service-uri=&output=gvds&callback=&tqx=&tp=";
+      
+      var lineChartQuery = new google.visualization.Query(lineChartQueryURL); // Send the query.
+        lineChartQuery.send(handleLineChartQueryResponse);
+
+        var pieChartQueryURL = "http://logd.tw.rpi.edu/sparql.php?query-option=text&query=PREFIX+conversion%3A+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fvocab%2Fenhancement%2F1%2F%3E%0D%0ASELECT+substr%28%3Fdate%2C1%2C3%29+as+%3Fmonth+%2C+%28sum%28xsd%3Adecimal%28%3Falgeria%29%29+%2B+sum%28xsd%3Adecimal%28%3Fangola%29%29+%2B+sum%28xsd%3Adecimal%28%3Fecuador%29%29+%2B+sum%28xsd%3Adecimal%28%3Firaq%29%29+%2B+sum%28xsd%3Adecimal%28%3Fkuwait%29%29+%2B+sum%28xsd%3Adecimal%28%3Flibya%29%29+%2B+sum%28xsd%3Adecimal%28%3Fnigeria%29%29+%2B+sum%28xsd%3Adecimal%28%3Fqatar%29%29+%2B+sum%28xsd%3Adecimal%28%3Fsaudi%29%29+%2B+sum%28xsd%3Adecimal%28%3Fuae%29%29+%2B+sum%28xsd%3Adecimal%28%3Fvenezuala%29%29%29*30+as+%3Ftotal%0D%0AFROM+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fversion%2F2011-Dec-16%3E%0D%0AWHERE+%0D%0A+{%0D%0A+%3Fs+conversion%3Adate+%3Fdate%3B%0D%0A+++++conversion%3Au_s_imports_from_algeria_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Falgeria%3B%0D%0A+++++conversion%3Au_s_imports_from_angola_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fangola%3B%0D%0A+++++conversion%3Au_s_imports_from_ecuador_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fecuador%3B%0D%0A+++++conversion%3Au_s_imports_from_iraq_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Firaq%3B%0D%0A+++++conversion%3Au_s_imports_from_kuwait_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fkuwait%3B%0D%0A+++++conversion%3Au_s_imports_from_libya_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Flibya%3B%0D%0A+++++conversion%3Au_s_imports_from_nigeria_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fnigeria%3B%0D%0A+++++conversion%3Au_s_imports_from_qatar_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fqatar%3B%0D%0A+++++conversion%3Au_s_imports_from_saudi_arabia_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fsaudi%3B%0D%0A+++++conversion%3Au_s_imports_from_united_arab_emirates_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fuae%3B%0D%0A+++++conversion%3Au_s_imports_from_venezuela_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fvenezuala.%0D%0AFILTER+%28%3Fdate+!%3D+%22%22+%26%26+substr%28%3Fdate%2C5%29%3D%22"+strUser+"%22%29%0D%0A}&service-uri=&output=gvds&callback=&tqx=&tp=";
+
+        var pieChartQuery = new google.visualization.Query(pieChartQueryURL); // Send the query.
+        pieChartQuery.send(handlePieChartQueryResponse);
+
+        var nonOpecPieChartQueryURL = "http://logd.tw.rpi.edu/sparql.php?query-option=text&query=PREFIX+conversion%3A+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fvocab%2Fenhancement%2F1%2F%3E%0D%0ASELECT+substr%28%3Fdate%2C1%2C3%29+as+%3Fmonth+%2C+sum%28xsd%3Adecimal%28%3Fnopec%29%29*30+as+%3Ftotal%0D%0AFROM+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fversion%2F2011-Dec-16%3E%0D%0AWHERE+%0D%0A+%7B%0D%0A+%3Fs+conversion%3Adate+%3Fdate%3B%0D%0A+++++conversion%3Au_s_imports_from_non_opec_countries_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fnopec.%0D%0A+++++%0D%0AFILTER+%28%3Fdate+%21%3D+%22%22+%26%26+substr%28%3Fdate%2C5%29%3D%22"+strUser+"%22%29%0D%0A%7D&service-uri=&output=gvds&callback=&tqx=&tp=";
+
+        var nonOpecPieChartQuery = new google.visualization.Query(nonOpecPieChartQueryURL); // Send the query.
+        nonOpecPieChartQuery.send(handleNonOpecPieChartQueryResponse);
+
+        var geoMapQueryURL = "http://logd.tw.rpi.edu/sparql.php?query-option=text&query=PREFIX+conversion%3A+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fvocab%2Fenhancement%2F1%2F%3E%0D%0ASELECT+substr%28%3Fdate%2C5%29+as+%3Fyear+%2Csum%28xsd%3Adecimal%28%3Falgeria*30%29%29+as+%3Falgeria+%2C+sum%28xsd%3Adecimal%28%3Fangola*30%29%29+as+%3Fangola+%2C+sum%28xsd%3Adecimal%28%3Fecuador*30%29%29+as+%3Fecuador+%2C+sum%28xsd%3Adecimal%28%3Firaq*30%29%29+as+%3Firaq+%2Csum%28xsd%3Adecimal%28%3Firan*30%29%29+as+%3Firan+%2C+sum%28xsd%3Adecimal%28%3Fkuwait*30%29%29+as+%3Fkuwait%2C+sum%28xsd%3Adecimal%28%3Flibya*30%29%29+as+%3Flibya%2C+sum%28xsd%3Adecimal%28%3Fnigeria*30%29%29+as+%3Fnigeria%2C+sum%28xsd%3Adecimal%28%3Fqatar*30%29%29+as+%3Fqatar+%2C+sum%28xsd%3Adecimal%28%3Fsaudi*30%29%29+as+%3Fsaudi%2C+sum%28xsd%3Adecimal%28%3Fuae*30%29%29+as+%3Fuae+%2C+sum%28xsd%3Adecimal%28%3Fvenezuala*30%29%29+as+%3Fvenezuala%0D%0AFrom+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fversion%2F2011-Dec-16%3E%0D%0AWHERE+%7B%0D%0A+%3Fs+conversion%3Adate+%3Fdate%3B%0D%0A+++++conversion%3Au_s_imports_from_algeria_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Falgeria%3B%0D%0A+++++conversion%3Au_s_imports_from_angola_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fangola%3B%0D%0A+++++conversion%3Au_s_imports_from_ecuador_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fecuador%3B%0D%0A+++++conversion%3Au_s_imports_from_iraq_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Firaq%3B%0D%0A+++++conversion%3Au_s_imports_from_iran_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Firan%3B%0D%0A+++++conversion%3Au_s_imports_from_kuwait_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fkuwait%3B%0D%0A+++++conversion%3Au_s_imports_from_libya_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Flibya%3B%0D%0A+++++conversion%3Au_s_imports_from_nigeria_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fnigeria%3B%0D%0A+++++conversion%3Au_s_imports_from_qatar_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fqatar%3B%0D%0A+++++conversion%3Au_s_imports_from_saudi_arabia_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fsaudi%3B%0D%0A+++++conversion%3Au_s_imports_from_united_arab_emirates_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fuae%3B%0D%0A+++++conversion%3Au_s_imports_from_venezuela_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3Fvenezuala.%0D%0AFILTER+%28%3Fdate+%21%3D+%22%22+%26%26+substr%28%3Fdate%2C5%29+%3D+%22"+strUser+"%22%29%0D%0A%7D%0D%0AGroup+by+substr%28%3Fdate%2C5%29%0D%0Aorder+by+1&service-uri=&output=gvds&callback=&tqx=&tp=";
+
+        var geoMapQuery = new google.visualization.Query(geoMapQueryURL); // Send the query.
+        geoMapQuery.send(handleGeoMapQueryResponse);
+
+    }
+    function handleLineChartQueryResponse(response) {
+      if (response.isError()) {
+           alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+           return;
+        }
+        var jsonData = response.getDataTable();
+        var jsonObj = [];
+        var rows = jsonData.getNumberOfRows();
+
+        var lineGraphData = new google.visualization.DataTable(jsonData);
+
+        var options = {
+          title: 'Monthly petroleum prices',
+          legend: { position: 'bottom' },
+          backgroundColor: {fill : "#FFFFF0"},
+          hAxis: {title: 'Month -->'},
+          vAxis: {title: 'Rate per barrel in USD'}
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('yearly_rate_chart_div'));
+        chart.draw(jsonData, options);
+    }
+
+    function handlePieChartQueryResponse(response) {
+      if (response.isError()) {
+           alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+           return;
+        }
+        var jsonData = response.getDataTable();
+        var jsonObj = [];
+        var rows = jsonData.getNumberOfRows();
+        
+        var options = {
+          title: 'Monthly imports from OPEC Countries',
+          is3D: true,
+          width: '312',
+          height: '312',
+          legend: 'none',
+          pieSliceText: 'label',
+          backgroundColor: {fill : "#FFFFF0"}
+        };
+
+
+        var lineGraphData = new google.visualization.DataTable(jsonData);
+
+        var chart = new google.visualization.PieChart(document.getElementById('opec_pie_chart_div'));
+        chart.draw(jsonData, options);
+    }
+
+    function handleNonOpecPieChartQueryResponse(response) {
+      if (response.isError()) {
+           alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+           return;
+        }
+        var jsonData = response.getDataTable();
+        var jsonObj = [];
+        var rows = jsonData.getNumberOfRows();
+        
+        var options = {
+          title: 'Monthly imports from NON OPEC Countries',
+          is3D: true,
+          width: '312',
+          height: '312',
+          legend: 'none',
+          pieSliceText: 'label',
+          backgroundColor: {fill : "#FFFFF0"}
+        };
+
+
+        var lineGraphData = new google.visualization.DataTable(jsonData);
+
+        var chart = new google.visualization.PieChart(document.getElementById('nonopec_pie_chart_div'));
+        chart.draw(jsonData, options);
+    }
+
+    function handleGeoMapQueryResponse(response) {
+      if (response.isError()) {
+           alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+           return;
+        }
+        var jsonData = response.getDataTable();
+        var jsonObj = [];
+        var countryList = ['Algeria', 'Angola', 'Ecuador', 'Iraq', 'Iran', 'Kuwait', 'Libya', 'Nigeria', 'Qatar', 'Saudi Arabia', 'United Arab Emirates', 'Venezuela'];
+        var columns = jsonData.getNumberOfColumns();
+        //alert(columns);
+        var newdata = new google.visualization.DataTable();
+        newdata.addColumn('string', 'Country');
+        newdata.addColumn('number', 'Import');
+        var countrycount = 0;
+        for (var i = 1; i < columns; i++) {
+          var imports = jsonData.getValue(0,i);
+          var country = countryList[countrycount];
+          countrycount++;
+          newdata.addRow([country, imports]);
+        }
+        var options = {
+          dataMode: 'regions',
+          width: '1260',
+          height: '500',
+          colors: [0xFF8747, 0xFFB581, 0xc06000],
+          backgroundColor: {fill : "#FFFFF0"} 
+        };
+      
+        var geomap = new google.visualization.GeoMap(
+            document.getElementById('geo_map_div'));
+        geomap.draw(newdata, options);
+        google.visualization.events.addListener( geomap, 'regionClick',
+        function(e) {
+            drawTableForCountry(e['region']);
+        });
+    }
+
+    function drawTableForCountry(countryCode) {
+
+      var countryCodeList = [['algeria', 'DZ'], 
+      ['angola', 'AO'], 
+      ['ecuador','EC'], 
+      ['iraq', 'IQ'], 
+      ['iran', 'IR'], 
+      ['kuwait', 'KW'], 
+      ['libya', 'LY'], 
+      ['nigeria', 'NG'], 
+      ['qatar', 'QA'], 
+      ['saudi_arabia', 'SA'], 
+      ['united_arab_emirates', 'AE'], 
+      ['venezuela', 'VE']];
+
+      var predicateCountry = "";
+      var e = document.getElementById("yearSelect");
+      var yearSelected = e.options[e.selectedIndex].value;
+
+      for (var i=0; i < countryCodeList.length; i++) {
+        if (countryCode == countryCodeList[i][1]) {
+          predicateCountry = countryCodeList[i][0];
+        }
+      }
+
+      var countryQueryURL = "http://logd.tw.rpi.edu/sparql.php?query-option=text&query=PREFIX+conversion%3A+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fvocab%2Fenhancement%2F1%2F%3E%0D%0ASELECT+substr%28%3Fdate%2C1%2C3%29+as+%3FMONTH%2C%3FIMPORT%0D%0AFROM+%3Chttp%3A%2F%2Flogd.tw.rpi.edu%2Fsource%2Fdata-gov%2Fdataset%2F5413%2Fversion%2F2011-Dec-16%3E%0D%0AWHERE+%0D%0A+{%0D%0A+%3Fs+conversion%3Adate+%3Fdate%3B%0D%0A+++++conversion%3Au_s_imports_from_"+predicateCountry+"_of_crude_oil_and_petroleum_products_thousand_barrels_per_day+%3FIMPORT.%0D%0A++++%0D%0AFILTER+%28%3Fdate+!%3D+%22%22+%26%26+substr%28%3Fdate%2C5%29%3D%22"+yearSelected+"%22%29%0D%0A}%0D%0A&service-uri=&output=gvds&callback=&tqx=&tp=";
+
+      var countryQuery = new google.visualization.Query(countryQueryURL); // Send the query.
+      countryQuery.send(handleCountryQueryResponse);
+    }
+
+    function handleCountryQueryResponse(response) {
+      if (response.isError()) {
+           alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+           return;
+      }
+
+      var jsonData = response.getDataTable();
+      var jsonObj = [];
+
+      var countryTableData = new google.visualization.DataTable(jsonData);
+      document.getElementById('table_div').style.visibility = "visible";
+      var chart = new google.visualization.Table(document.getElementById('table_div'));
+      chart.draw(jsonData, {showRowNumber: false, height: '27', title: 'Monthly imports'});
+    }
+    </script>
+  </head>
+  <body bgcolor="#FFFFF0">
+        <b style="color:#483D8B;font-size:20px;">Description</b><br>
+    A demo that illustrates the trends in petroleum imports by US from OPEC and Non-OPEC countries and the real time petroleum prices. <br><br>
+    <b style="color:#483D8B;font-size:20px;">Contributors </b><br>
+    <li>Sudharshan Narasimhan Vasudevan</li>
+    <li>Yogeshwara Krishnan</li> <br>
+      <b></b>
+      <b style="color:#483D8B;font-size:20px;">Browser consideration</b> <br>
+	Works with browsers which have compatible Flash plugin. <br> <br>
+      <b style="color:#483D8B;font-size:20px;">Outline</b> <br>
+      The Department of Energy provides monthly data on combined imports of crude oil and petroleum products into US by country origin. It also provides Real gasoline pump prices on an annual basis and monthly prices for gasoline, heating oil, diesel fuel, and imported refiners acquisition cost of crude oil. Monthly Real Petroleum Prices are computed by dividing the nominal price in a given month by the ratio of the Consumer Price Index (CPI) in that month to the CPI in the current STEO month, the "base" period. <br> <br>
+      <b style="color:#483D8B;font-size:20px;">Using the demo</b> <br>
+      <li>The static graph illustrates the cumulative import data of OPEC countries in comparison with Non-OPEC countries and the average rate of petroleum in US during the years 1992-2011.</li>
+      <li>Select a year. The graph shows the monthly petroleum rates per barrel during that year. The Pie charts are illustrations of monthly (cumulative) petroleum imports from OPEC and Non-OPEC countries.</li> 
+    <table>
+      <tr>
+        <td><div id='static_chart_div' style="width:600px; height:350px;">
+        </div><b style="color:#483D8B;font-size:20px;">Legend</b> <br><br> RATE = average rate per thousand barrels in USD <br><br>
+               OPEC/NONOPEC = y*100,000 barrels imported where <br>y is the corresponding value from the graph. <br> <br>X-axis- years <br> Y-axis- number of barrels imported 
+             </td>
+    <td> Year:
+      <select id="yearSelect" onChange="getUserInput()">
+      <option value="1992">1992</option>
+      <option value="1993">1993</option>
+      <option value="1994">1994</option>
+      <option value="1995">1995</option>
+      <option value="1996">1996</option>
+      <option value="1997">1997</option>
+      <option value="1998">1998</option>
+      <option value="1999">1999</option>
+      <option value="2000" selected="selected">2000</option>
+      <option value="2001">2001</option>
+      <option value="2002">2002</option>
+      <option value="2003">2003</option>
+      <option value="2004">2004</option>
+      <option value="2005">2005</option>
+      <option value="2006">2006</option>
+      <option value="2007">2007</option>
+      <option value="2008">2008</option>
+      <option value="2009">2009</option>
+      <option value="2010">2010</option>
+      <option value="2011">2011</option>
+    </select>
+      <div id='yearly_rate_chart_div' style="width:625px; height:250px"></div> <br>
+      <b style="color:#483D8B;font-size:20px;">Legend</b><br><br>RATE = Rate per barrel in USD.<br><br> X-axis- months <br> Y-axis- rate per barrel($) 
+    </td>
+    </tr>
+    <tr>
+      <td>The highlighted countries in the map are the OPEC affiliated countries. The map shows petroleum  sum of import data for the year chosen. Click on the highlighted regions for month wise import data (Shown as a table). Please note that Non-OPEC countries are not highlighted. The IMPORT column is the no. of barrels import per day on an average, times 1000.</td>
+      <td>
+        <table>
+          <tr>
+            <td>
+              <div id='opec_pie_chart_div' style="width:312px; height:250px"></div>
+            </td>
+            <td>
+              <div id='nonopec_pie_chart_div' style="width:312px; height:250px"></div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>Individual petroleum imports of OPEC Countries (Yearly)</b> <br>
+        <div id='geo_map_div' style="width:625px; height:500px"></div>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td><div id='dummy_div1' style="width:140px; height:500px"></td>
+            <td><div id='dummy_div2' style="width:140px; height:500px"></td>
+            <td>
+              <br>
+              <div id='table_div' style="width:140px; height:500px"></div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    </table>
+    <hr>
+    <b style="color:#483D8B;font-size:20px;">Uses Datasets</b><br> <li><a href="http://logd.tw.rpi.edu/source/data-gov/dataset/861.html">Dataset-861</a></li>
+    <li><a href="http://logd.tw.rpi.edu/source/data-gov/dataset/5413.html">Dataset-5413</a></li><br> <br>
+    <b style="color:#483D8B;font-size:20px;">Uses Technology </b><br> 
+    <li><a href="http://logd.tw.rpi.edu/technology/RDF">RDF</a> </li>
+    <li> <a href="http://logd.tw.rpi.edu/technology/SPARQL">SPARQL</a> </li>
+    <li><a href="http://logd.tw.rpi.edu/technology/javascript">Javascript</a> </li>
+    <li><a href="http://logd.tw.rpi.edu/technology/Google_Visualization_API">Google Visualization API</a> </li>
+    <li><a href="http://logd.tw.rpi.edu/technology/SparqlProxy">SparqlProxy</a></li> <br>
+    <b style="color:#483D8B;font-size:20px;">Uses SPARQL Endpoint: </b> <a href="http://logd.tw.rpi.edu/sparql">http://logd.tw.rpi.edu/sparql</a><br> <br>
+    <b>Note:</b> Countries listed under OPEC and non-OPEC are based on current affiliations. OPEC and non-OPEC totals are based on affiliations for the stated period of time which may differ from current affiliations. Indonesia withdrew from OPEC in January 2009, Angola joined OPEC in January 2007, Ecuador withdrew from OPEC in January 1993 and rejoined in November 2007, and Gabon withdrew from OPEC in July 1996. Crude oil and petroleum products are reported by the PAD District of entry. Crude oil includes imports for storage in the Stategic Petroleum Reserve. The Persian Gulf includes Bahrain, Iran, Iraq, Kuwait, Qatar, Saudi Arabia, and United Arab Emirates. Totals may not equal sum of components due to independent rounding.
+    <hr>
+  </body>
+</html>
